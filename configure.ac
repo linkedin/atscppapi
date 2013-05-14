@@ -72,6 +72,8 @@ AC_CONFIG_FILES([examples/internal_transaction_handling/Makefile])
 AC_CONFIG_FILES([examples/async_timer/Makefile])
 AC_CONFIG_FILES([examples/request_cookies/Makefile])
 
+ifdef([AM_PROG_AR],
+      [AM_PROG_AR])
 
 # Checks for programs.
 AC_PROG_CXX
