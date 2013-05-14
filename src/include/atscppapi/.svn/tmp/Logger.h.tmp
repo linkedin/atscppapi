@@ -1,0 +1,100 @@
+/*
+ * Logger.h
+ *
+ *  Created on: Apr 1, 2013
+ *      Author: bgeffon
+ */
+
+#pragma once
+#ifndef ATSCPPAPI_LOGGER_H_
+#define ATSCPPAPI_LOGGER_H_
+
+#include <string>
+#include "atscppapi/LogLevel.h"
+
+#if !defined(ATSCPPAPI_PRINTFLIKE)
+#if defined(__GNUC__) || defined(__clang__)
+#define ATSCPPAPI_PRINTFLIKE(fmt, arg) __attribute__((format(printf, fmt, arg)))
+#else
+#define ATSCPPAPI_PRINTFLIKE(fmt, arg)
+#endif
+#endif
+
+#define LOG_DEBUG(log, fmt, ...) \
+  do { \
+    (log).logDebug("[%s:%d, %s()] " fmt, __FILE__, __LINE__, __FUNCTION__, ## __VA_ARGS__); \
+  } while (false)
+
+#define LOG_INFO(log, fmt, ...) \
+  do { \
+    (log).logInfo("[%s:%d, %s()] " fmt, __FILE__, __LINE__, __FUNCTION__, ## __VA_ARGS__); \
+  } while (false)
+
+#define LOG_ERROR(log, fmt, ...) \
+  do { \
+    (log).logError("[%s:%d, %s()] " fmt, __FILE__, __LINE__, __FUNCTION__, ## __VA_ARGS__); \
+  } while (false)
+
+/*
+ * We forward declare these because if we didn't we end up writing our
+ * own version to do the vsnprintf just to call TSDebug and have it do
+ * an unncessary vsnprintf.
+ */
+extern "C" void TSDebug(const char *tag, const char *fmt, ...) ATSCPPAPI_PRINTFLIKE(2,3);
+extern "C" void TSError(const char *fmt, ...) ATSCPPAPI_PRINTFLIKE(1,2);
+
+// This is weird, but see the following:
+//   http://stackoverflow.com/questions/5641427/how-to-make-preprocessor-generate-a-string-for-line-keyword
+#define STRINGIFY0(x) #x
+#define STRINGIFY(x) STRINGIFY0(x)
+#define LINE_NO STRINGIFY(__LINE__)
+
+#define TS_DEBUG(tag, fmt, ...) \
+  do { \
+    TSDebug(tag "." __FILE__ ":" LINE_NO , "[%s()] " fmt, __FUNCTION__, ## __VA_ARGS__); \
+  } while (false)
+
+#define TS_ERROR(tag, fmt, ...) \
+  do { \
+    TS_DEBUG(tag, "[ERROR] " fmt, ## __VA_ARGS__); \
+    TSError("[%s] [%s:%d, %s()] " fmt, tag, __FILE__, __LINE__, __FUNCTION__, ## __VA_ARGS__); \
+  } while (false)
+
+namespace atscppapi {
+
+class LoggerState;
+
+class Logger {
+public:
+  Logger();
+  ~Logger();
+  bool init(const std::string &file, bool add_timestamp = true, bool rename_file = true,
+      LogLevel level = LOG_LEVEL_INFO, bool rolling_enabled = true, int rolling_interval_seconds = 3600);
+  void setLogHeader(const std::string &header);
+  std::string getLogHeader() const;
+
+  void setRollingIntervalSeconds(int seconds);
+  int getRollingIntervalSeconds() const;
+  void setRollingEnabled(bool enabled);
+  bool isRollingEnabled() const;
+  void setLogLevel(LogLevel level);
+  LogLevel getLogLevel() const;
+
+  void flush();
+
+  // The printflike macro is correct w/ (2,3). This is because
+  // we always have the this pointer being passed as the
+  // first argument. Don't change it or you will get burned.
+  void logDebug(const char *fmt, ...) ATSCPPAPI_PRINTFLIKE(2,3);
+  void logInfo(const char *fmt, ...) ATSCPPAPI_PRINTFLIKE(2,3);
+  void logError(const char *fmt, ...) ATSCPPAPI_PRINTFLIKE(2,3);
+private:
+  LoggerState *state_;
+};
+
+} /* atscppapi */
+
+
+
+
+#endif /* ATSCPPAPI_LOGGER_H_ */

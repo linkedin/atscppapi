@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2013 LinkedIn Corp. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the license at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ *
+ */
+
+/**
+ * @file PluginInit.h
+ * @author Brian Geffon
+ * @author Manjesh Nilange
+ * @brief Provides hooks that plugins have to implement. ATS will invoke these when loading the plugin .so files.
+ */
+
+#pragma once
+#ifndef ATSCPPAPI_PLUGININIT_H_
+#define ATSCPPAPI_PLUGININIT_H_
+
+extern "C" {
+
+/** 
+ * Invoked for "general" plugins - listed in plugin.config. The arguments in the
+ * plugin.config line are provided in this invocation.
+ *
+ * @param argc Count of arguments
+ * @param argv Array of pointers pointing to arguments
+ */
+void TSPluginInit(int argc, const char *argv[]);
+
+enum TsReturnCode { TS_ERROR = -1, TS_SUCCESS = 0 };
+
+/** 
+ * Invoked for remap plugins - listed in remap.config. The arguments provided as @pparam
+ * in the remap.config line are provided in this invocation.
+ *
+ * @param argc Count of arguments
+ * @param argv Array of pointers pointing to arguments
+ * @param instance_handle Should be passed to the RemapPlugin constructor
+ * @param errbuf Not used
+ * @param errbuf_size Not used
+ */
+TsReturnCode TSRemapNewInstance(int argc, char *argv[], void **instance_handle, char *errbuf, int errbuf_size);
+
+}
+
+
+#endif /* ATSCPPAPI_PLUGININIT_H_ */

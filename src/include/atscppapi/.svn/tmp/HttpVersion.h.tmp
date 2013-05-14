@@ -1,0 +1,37 @@
+/**
+ * @file HttpVersion.h
+ * @author Brian Geffon
+ * @author Manjesh Nilange
+ *
+ * \brief Contains an enumeration and printable strings for Http Versions.
+ */
+
+#pragma once
+#ifndef ATSCPPAPI_HTTP_VERSION_H_
+#define ATSCPPAPI_HTTP_VERSION_H_
+
+#include <string>
+
+namespace atscppapi {
+
+/**
+ * An enumeration of all available Http Versions.
+ */
+enum HttpVersion {
+  HTTP_VERSION_UNKNOWN = 0,
+  HTTP_VERSION_0_9,
+  HTTP_VERSION_1_0,
+  HTTP_VERSION_1_1,
+};
+
+/**
+ * An array of printable strings representing of the HttpVersion
+ * \code
+ * cout << HTTP_VERSION_STRINGS[HTTP_VERSION_1_1] << endl;
+ * \endcode
+ */
+extern const std::string HTTP_VERSION_STRINGS[];
+
+}
+
+#endif

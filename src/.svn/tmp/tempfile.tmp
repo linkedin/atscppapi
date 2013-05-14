@@ -1,0 +1,201 @@
+/*
+ * Transaction.cc
+ *
+ *  Created on: Mar 6, 2013
+ *      Author: bgeffon
+ */
+
+#include "atscppapi/Transaction.h"
+#include <cstdlib>
+#include <cstring>
+#include <ts/ts.h>
+#include "logging_internal.h"
+
+using namespace atscppapi;
+
+struct atscppapi::TransactionState {
+  TSHttpTxn txn_;
+  std::list<TransactionPlugin *> plugins_;
+  TSMBuffer client_request_hdr_buf_;
+  TSMLoc client_request_hdr_loc_;
+  ClientRequest client_request_;
+  InitializableValue<TSMBuffer> server_request_hdr_buf_;
+  InitializableValue<TSMLoc> server_request_hdr_loc_;
+  Request server_request_;
+  InitializableValue<TSMBuffer> server_response_hdr_buf_;
+  InitializableValue<TSMLoc> server_response_hdr_loc_;
+  Response server_response_;
+  InitializableValue<TSMBuffer> client_response_hdr_buf_;
+  InitializableValue<TSMLoc> client_response_hdr_loc_;
+  Response client_response_;
+  TransactionState(TSHttpTxn txn, TSMBuffer client_request_hdr_buf, TSMLoc client_request_hdr_loc)
+    : txn_(txn), client_request_hdr_buf_(client_request_hdr_buf), client_request_hdr_loc_(client_request_hdr_loc),
+      client_request_(txn, client_request_hdr_buf, client_request_hdr_loc),
+      server_request_hdr_buf_(NULL, false), server_request_hdr_loc_(NULL, false),
+      server_response_hdr_buf_(NULL, false), server_response_hdr_loc_(NULL, false),
+      client_response_hdr_buf_(NULL, false), client_response_hdr_loc_(NULL, false)
+  { };
+};
+
+Transaction::Transaction(void *raw_txn) {
+  TSHttpTxn txn = static_cast<TSHttpTxn>(raw_txn);
+  TSMBuffer hdr_buf;
+  TSMLoc hdr_loc;
+  TSHttpTxnClientReqGet(txn, &hdr_buf, &hdr_loc);
+  if (!hdr_buf || !hdr_loc) {
+    LOG_ERROR("TSHttpTxnClientReqGet tshttptxn=%p returned a null hdr_buf=%p or hdr_loc=%p.", txn, hdr_buf, hdr_loc);
+  }
+
+  state_ = new TransactionState(txn, hdr_buf, hdr_loc);
+  LOG_DEBUG("Transaction tshttptxn=%p constructing Transaction object %p, client req hdr_buf=%p, client req hdr_loc=%p",
+      txn, this, hdr_buf, hdr_loc);
+}
+
+Transaction::~Transaction() {
+  LOG_DEBUG("Transaction tshttptxn=%p destroying Transaction object %p", state_->txn_, this);
+  static const TSMLoc NULL_PARENT_LOC = NULL;
+  TSHandleMLocRelease(state_->client_request_hdr_buf_, NULL_PARENT_LOC, state_->client_request_hdr_loc_);
+  if (state_->server_request_hdr_buf_.isInitialized() && state_->server_request_hdr_loc_.isInitialized()) {
+    TSHandleMLocRelease(state_->server_request_hdr_buf_, NULL_PARENT_LOC, state_->server_request_hdr_loc_);
+  }
+  if (state_->server_response_hdr_buf_.isInitialized() && state_->server_response_hdr_loc_.isInitialized()) {
+    TSHandleMLocRelease(state_->server_response_hdr_buf_, NULL_PARENT_LOC, state_->server_response_hdr_loc_);
+  }
+  if (state_->client_response_hdr_buf_.isInitialized() && state_->client_response_hdr_loc_.isInitialized()) {
+    TSHandleMLocRelease(state_->client_response_hdr_buf_, NULL_PARENT_LOC, state_->client_response_hdr_loc_);
+  }
+  delete state_;
+}
+
+void Transaction::resume() {
+  TSHttpTxnReenable(state_->txn_, static_cast<TSEvent>(TS_EVENT_HTTP_CONTINUE));
+}
+
+void Transaction::error() {
+  LOG_DEBUG("Transaction tshttptxn=%p reenabling to error state", state_->txn_);
+  TSHttpTxnReenable(state_->txn_, static_cast<TSEvent>(TS_EVENT_HTTP_ERROR));
+}
+
+void Transaction::error(const std::string &page) {
+  setErrorBody(page);
+  error(); // finally, reenable with HTTP_ERROR
+}
+
+void Transaction::setErrorBody(const std::string &page) {
+  LOG_DEBUG("Transaction tshttptxn=%p setting error body page: %s", state_->txn_, page.c_str());
+  char *res_bdy = static_cast<char*>(TSmalloc(page.length() + 1));
+  strncpy(res_bdy, page.c_str(), page.length());
+  res_bdy[page.length()] = '\0';
+
+  std::string str_content_type = "text/html";
+  char *content_type = static_cast<char*>(TSmalloc(str_content_type.length() + 1));
+  strncpy(content_type, str_content_type.c_str(), str_content_type.length());
+  content_type[str_content_type.length()] = '\0';
+
+  TSHttpTxnErrorBodySet(state_->txn_, res_bdy, page.length(), content_type);
+}
+
+bool Transaction::isInternalRequest() const {
+  return TSHttpIsInternalRequest(state_->txn_) == TS_SUCCESS;
+}
+
+void *Transaction::getAtsHandle() const {
+  return static_cast<void *>(state_->txn_);
+}
+
+const std::list<atscppapi::TransactionPlugin *> &Transaction::getPlugins() const {
+  return state_->plugins_;
+}
+
+void Transaction::addPlugin(TransactionPlugin *plugin) {
+  LOG_DEBUG("Transaction tshttptxn=%p registering new TransactionPlugin %p.", state_->txn_, plugin);
+  state_->plugins_.push_back(plugin);
+}
+
+ClientRequest &Transaction::getClientRequest() {
+  return state_->client_request_;
+}
+
+Request &Transaction::getServerRequest() {
+  return state_->server_request_;
+}
+
+Response &Transaction::getServerResponse() {
+  return state_->server_response_;
+}
+
+Response &Transaction::getClientResponse() {
+  return state_->client_response_;
+}
+
+const sockaddr *Transaction::getIncomingAddress() const {
+  return TSHttpTxnIncomingAddrGet(state_->txn_);
+}
+
+const sockaddr *Transaction::getClientAddress() const {
+  return TSHttpTxnClientAddrGet(state_->txn_);
+}
+
+const sockaddr *Transaction::getNextHopAddress() const {
+  return TSHttpTxnNextHopAddrGet(state_->txn_);
+}
+
+const sockaddr *Transaction::getServerAddress() const {
+  return TSHttpTxnServerAddrGet(state_->txn_);
+}
+
+bool Transaction::setServerAddress(const sockaddr *sockaddress) {
+  return TSHttpTxnServerAddrSet(state_->txn_,sockaddress) == TS_SUCCESS;
+}
+
+bool Transaction::setIncomingPort(uint16_t port) {
+  TSHttpTxnClientIncomingPortSet(state_->txn_, port);
+  return true; // In reality TSHttpTxnClientIncomingPortSet should return SUCCESS or ERROR.
+}
+
+namespace {
+
+// functor (hence type named like a function)
+class initializeHandles {
+public:
+  typedef TSReturnCode (*GetterFunction)(TSHttpTxn, TSMBuffer *, TSMLoc *);
+  initializeHandles(GetterFunction getter) : getter_(getter) { }
+  bool operator()(TSHttpTxn txn, InitializableValue<TSMBuffer> &hdr_buf, InitializableValue<TSMLoc> &hdr_loc) {
+    if (!hdr_buf.isInitialized() && !hdr_loc.isInitialized()) {
+      if (getter_(txn, &(hdr_buf.getValueRef()), &(hdr_loc.getValueRef())) == TS_SUCCESS) {
+        hdr_buf.setInitialized();
+        hdr_loc.setInitialized();
+        return true;
+      } // TODO else log initialization failure error
+    } // TODO else log reinitialization error
+    return false;
+  }
+private:
+  GetterFunction getter_;
+};
+
+} // anonymous namespace
+
+void Transaction::initServerRequest() {
+  static initializeHandles initializeServerRequestHandles(TSHttpTxnServerReqGet);
+  if (initializeServerRequestHandles(state_->txn_, state_->server_request_hdr_buf_,
+                                     state_->server_request_hdr_loc_)) {
+    state_->server_request_.init(state_->server_request_hdr_buf_, state_->server_request_hdr_loc_);
+  }
+}
+
+void Transaction::initServerResponse() {
+  static initializeHandles initializeServerResponseHandles(TSHttpTxnServerRespGet);
+  if (initializeServerResponseHandles(state_->txn_, state_->server_response_hdr_buf_,
+                                      state_->server_response_hdr_loc_)) {
+    state_->server_response_.init(state_->server_response_hdr_buf_, state_->server_response_hdr_loc_);
+  }
+}
+
+void Transaction::initClientResponse() {
+  static initializeHandles initializeClientResponseHandles(TSHttpTxnClientRespGet);
+  if (initializeClientResponseHandles(state_->txn_, state_->client_response_hdr_buf_,
+                                      state_->client_response_hdr_loc_)) {
+    state_->client_response_.init(state_->client_response_hdr_buf_, state_->client_response_hdr_loc_);
+  }
+}

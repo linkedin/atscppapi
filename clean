@@ -1,0 +1,30 @@
+#/bin/sha
+
+rm -fr docs/html
+rm -f docs/Doxyfile
+rm -fr build
+make clean
+rm -fr autoscan.log
+rm -fr src/*.lo
+rm -fr  aclocal.m4
+rm -fr autom4te.cache
+rm -fr .libs .deps src/.deps src/*.o src/.dirstamp
+rm -fr config.log
+rm -fr config.status
+rm -fr configure
+rm -fr depcomp
+rm -fr install-sh
+rm -fr Makefile
+rm -fr Makefile.in
+rm -fr missing
+rm -fr config.guess
+rm -fr config.sub
+rm -fr libtool
+rm -fr ltmain.sh
+rm -fr m4
+rm -rf src/*.la
+rm -rf *.la
+rm -rf `find . -type d -name .libs`
+rm -rf `find . -type d -name .deps`
+rm -rf `find . -name Makefile`
+rm -rf `find . -name Makefile.in`

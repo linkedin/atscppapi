@@ -1,0 +1,48 @@
+/*
+ * TransactionHookPlugin.cc
+ *
+ *  Created on: Mar 5, 2013
+ *      Author: bgeffon
+ */
+
+#include <iostream>
+#include <atscppapi/GlobalPlugin.h>
+#include <atscppapi/TransactionPlugin.h>
+#include <atscppapi/PluginInit.h>
+
+using namespace atscppapi;
+
+class TransactionHookPlugin : public atscppapi::TransactionPlugin {
+public:
+  TransactionHookPlugin(Transaction &transaction) : TransactionPlugin(transaction) {
+    char_ptr_ = new char[100];
+    TransactionPlugin::registerHook(HOOK_SEND_RESPONSE_HEADERS);
+    std::cout << "Constructed!" << std::endl;
+  }
+  virtual ~TransactionHookPlugin() {
+    delete[] char_ptr_; // cleanup
+    std::cout << "Destroyed!" << std::endl;
+  }
+  void handleSendResponseHeaders(Transaction &transaction) {
+    std::cout << "Send response headers!" << std::endl;
+    transaction.resume();
+  }
+private:
+  char *char_ptr_;
+};
+
+class GlobalHookPlugin : public atscppapi::GlobalPlugin {
+public:
+  GlobalHookPlugin() {
+    GlobalPlugin::registerHook(HOOK_READ_REQUEST_HEADERS_PRE_REMAP);
+  }
+  virtual void handleReadRequestHeadersPreRemap(Transaction &transaction) {
+    std::cout << "Hello from handleReadRequesHeadersPreRemap!" << std::endl;
+    TransactionPlugin *plugin = new TransactionHookPlugin(transaction);
+    transaction.resume();
+  }
+};
+
+void TSPluginInit(int argc, const char *argv[]) {
+  atscppapi::GlobalPlugin *instance = new GlobalHookPlugin();
+}

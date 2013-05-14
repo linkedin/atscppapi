@@ -1,0 +1,46 @@
+/*
+ * atsutils.h
+ *
+ *  Created on: Mar 6, 2013
+ *      Author: bgeffon
+ */
+
+#pragma once
+#ifndef ATSCPPAPI_ATSUTILS_H_
+#define ATSCPPAPI_ATSUTILS_H_
+
+#include <ts/ts.h>
+#include <string>
+#include "atscppapi/HookType.h"
+#include "atscppapi/GlobalPlugin.h"
+#include "atscppapi/TransactionPlugin.h"
+#include "atscppapi/TransformationType.h"
+#include "atscppapi/Plugin.h"
+#include "atscppapi/HttpVersion.h"
+#include "atscppapi/utils.h"
+
+namespace atscppapi {
+
+namespace utils {
+
+/**
+ * \private
+ */
+class internal {
+public:
+  static TSHttpHookID convertInternalHookToTsHook(HookType);
+  static TSHttpHookID convertInternalTransformationTypeToTsHook(TransformationType type);
+  static void invokePluginForEvent(TransactionPlugin *, TSHttpTxn, TSEvent);
+  static void invokePluginForEvent(GlobalPlugin *, TSHttpTxn, TSEvent);
+  static HttpVersion getHttpVersion(TSMBuffer hdr_buf, TSMLoc hdr_loc);
+  static void initTransactionManagement();
+  static std::string consumeFromTSIOBufferReader(TSIOBufferReader);
+  static shared_ptr<Mutex> getTransactionPluginMutex(TransactionPlugin &);
+  static Transaction &getTransaction(TSHttpTxn);
+}; /* internal */
+
+}
+
+}
+
+#endif /* ATSCPPAPI_ATSUTILS_H_ */
