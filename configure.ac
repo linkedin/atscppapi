@@ -12,8 +12,8 @@
 # These first two version numbers are updated on each release.
 # Version number is calculated as MAJOR * 1000000 + MINOR * 1000 + MICRO
 # Version string is in the form of MAJOR.MINOR.MICRO
-m4_define([ATSCPPAPI_VERSION_STR],[1.0.3])
-m4_define([ATSCPPAPI_VERSION_NUM],[1000003])
+m4_define([ATSCPPAPI_VERSION_STR],[1.0.4])
+m4_define([ATSCPPAPI_VERSION_NUM],[1000004])
 AC_PREREQ([2.63])
 AC_INIT([libatscppapi], ATSCPPAPI_VERSION_STR(), [bgeffon@linkedin.com, mnilange@linkedin.com], [atscppapi])
 AM_INIT_AUTOMAKE([1.10 -Wall -Werror no-define foreign])
