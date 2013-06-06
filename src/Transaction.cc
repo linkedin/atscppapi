@@ -79,12 +79,15 @@ Transaction::~Transaction() {
   static const TSMLoc NULL_PARENT_LOC = NULL;
   TSHandleMLocRelease(state_->client_request_hdr_buf_, NULL_PARENT_LOC, state_->client_request_hdr_loc_);
   if (state_->server_request_hdr_buf_.isInitialized() && state_->server_request_hdr_loc_.isInitialized()) {
+    LOG_DEBUG("Releasing server request");
     TSHandleMLocRelease(state_->server_request_hdr_buf_, NULL_PARENT_LOC, state_->server_request_hdr_loc_);
   }
   if (state_->server_response_hdr_buf_.isInitialized() && state_->server_response_hdr_loc_.isInitialized()) {
+    LOG_DEBUG("Releasing server response");
     TSHandleMLocRelease(state_->server_response_hdr_buf_, NULL_PARENT_LOC, state_->server_response_hdr_loc_);
   }
   if (state_->client_response_hdr_buf_.isInitialized() && state_->client_response_hdr_loc_.isInitialized()) {
+    LOG_DEBUG("Releasing client response");
     TSHandleMLocRelease(state_->client_response_hdr_buf_, NULL_PARENT_LOC, state_->client_response_hdr_loc_);
   }
   delete state_;
@@ -244,6 +247,7 @@ void Transaction::initServerRequest() {
   static initializeHandles initializeServerRequestHandles(TSHttpTxnServerReqGet);
   if (initializeServerRequestHandles(state_->txn_, state_->server_request_hdr_buf_,
                                      state_->server_request_hdr_loc_)) {
+    LOG_DEBUG("Initializing server request");
     state_->server_request_.init(state_->server_request_hdr_buf_, state_->server_request_hdr_loc_);
   }
 }
@@ -252,6 +256,7 @@ void Transaction::initServerResponse() {
   static initializeHandles initializeServerResponseHandles(TSHttpTxnServerRespGet);
   if (initializeServerResponseHandles(state_->txn_, state_->server_response_hdr_buf_,
                                       state_->server_response_hdr_loc_)) {
+    LOG_DEBUG("Initializing server response");
     state_->server_response_.init(state_->server_response_hdr_buf_, state_->server_response_hdr_loc_);
   }
 }
@@ -260,6 +265,7 @@ void Transaction::initClientResponse() {
   static initializeHandles initializeClientResponseHandles(TSHttpTxnClientRespGet);
   if (initializeClientResponseHandles(state_->txn_, state_->client_response_hdr_buf_,
                                       state_->client_response_hdr_loc_)) {
+    LOG_DEBUG("Initializing client response");
     state_->client_response_.init(state_->client_response_hdr_buf_, state_->client_response_hdr_loc_);
   }
 }

@@ -44,6 +44,7 @@ static int handleGlobalPluginEvents(TSCont cont, TSEvent event, void *edata) {
   if (state->ignore_internal_transactions_ && (TSHttpIsInternalRequest(txn) == TS_SUCCESS)) {
     LOG_DEBUG("Ignoring event %d on internal transaction %p for global plugin %p", event, txn,
               state->global_plugin_);
+    TSHttpTxnReenable(txn, TS_EVENT_HTTP_CONTINUE);
   } else {
     LOG_DEBUG("Invoking global plugin %p for event %d on transaction %p", state->global_plugin_, event, txn);
     utils::internal::invokePluginForEvent(state->global_plugin_, txn, event);
