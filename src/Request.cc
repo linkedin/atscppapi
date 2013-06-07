@@ -33,8 +33,8 @@ struct atscppapi::RequestState: noncopyable  {
   TSMBuffer hdr_buf_;
   TSMLoc hdr_loc_;
   TSMLoc url_loc_;
-  InitializableValue<Url> url_;
-  InitializableValue<Headers> headers_;
+  Url url_;
+  Headers headers_;
   InitializableValue<HttpMethod> method_;
   InitializableValue<HttpVersion> version_;
   bool destroy_buf_;
@@ -58,14 +58,13 @@ Request::Request(const string &url_str, HttpMethod method, HttpVersion version) 
   state_->version_.setValue(version);
   state_->destroy_buf_ = true;
   state_->hdr_buf_ = TSMBufferCreate();
-  state_->headers_.getValueRef().initDetached();
-  state_->headers_.setInitialized();
+  state_->headers_.initDetached();
   if (TSUrlCreate(state_->hdr_buf_, &state_->url_loc_) == TS_SUCCESS) {
     const char *url_str_start = url_str.c_str();
     const char *url_str_end = url_str_start + url_str.size();
     if (TSUrlParse(state_->hdr_buf_, state_->url_loc_, &url_str_start, url_str_end) != TS_PARSE_DONE) {
       LOG_ERROR("[%s] does not represent a valid url", url_str.c_str());
-      state_->url_.setInitialized(true); // we don't want it to be lazy-initialized with "bad" url_loc
+      state_->url_.init(state_->hdr_buf_, state_->url_loc_);
     }
   } else {
     state_->url_loc_ = NULL;
@@ -81,10 +80,15 @@ void Request::init(void *hdr_buf, void *hdr_loc) {
   }
   state_->hdr_buf_ = static_cast<TSMBuffer>(hdr_buf);
   state_->hdr_loc_ = static_cast<TSMLoc>(hdr_loc);
+  state_->headers_.init(state_->hdr_buf_, state_->hdr_loc_);
   state_->url_loc_ = NULL;
   TSHttpHdrUrlGet(state_->hdr_buf_, state_->hdr_loc_, &state_->url_loc_);
   if (!state_->url_loc_) {
     LOG_ERROR("TSHttpHdrUrlGet returned a null url loc, hdr_buf=%p, hdr_loc=%p", state_->hdr_buf_, state_->hdr_loc_);
+  }
+  else {
+    state_->url_.init(state_->hdr_buf_, state_->url_loc_);
+    LOG_DEBUG("Initialized url");
   }
 }
 
@@ -123,11 +127,6 @@ HttpMethod Request::getMethod() const {
 }
 
 Url &Request::getUrl() {
-  if (!state_->url_.isInitialized() && state_->hdr_buf_ && state_->url_loc_) {
-    state_->url_.getValueRef().init(state_->hdr_buf_, state_->url_loc_);
-    state_->url_.setInitialized();
-    LOG_DEBUG("Initializing url object %p on hdr_buf=%p, url_loc=%p", &state_->url_.getValueRef(), state_->hdr_buf_, state_->url_loc_);
-  }
   return state_->url_;
 }
 
@@ -141,11 +140,6 @@ atscppapi::HttpVersion Request::getVersion() const {
 }
 
 atscppapi::Headers &Request::getHeaders() const {
-  if (!state_->headers_.isInitialized() && state_->hdr_buf_ && state_->hdr_loc_) {
-    state_->headers_.getValueRef().init(state_->hdr_buf_, state_->hdr_loc_);
-    state_->headers_.setInitialized();
-    LOG_DEBUG("Initializing request headers on hdr_buf=%p, hdr_loc=%p", state_->hdr_buf_, state_->hdr_loc_);
-  }
   return state_->headers_;
 }
 
