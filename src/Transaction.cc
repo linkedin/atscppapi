@@ -24,6 +24,7 @@
 #include <ts/ts.h>
 #include "atscppapi/shared_ptr.h"
 #include "logging_internal.h"
+#include "utils_internal.h"
 #include "InitializableValue.h"
 #include "atscppapi/noncopyable.h"
 
@@ -40,23 +41,23 @@ struct atscppapi::TransactionState: noncopyable {
   TSMBuffer client_request_hdr_buf_;
   TSMLoc client_request_hdr_loc_;
   ClientRequest client_request_;
-  InitializableValue<TSMBuffer> server_request_hdr_buf_;
-  InitializableValue<TSMLoc> server_request_hdr_loc_;
+  TSMBuffer server_request_hdr_buf_;
+  TSMLoc server_request_hdr_loc_;
   Request server_request_;
-  InitializableValue<TSMBuffer> server_response_hdr_buf_;
-  InitializableValue<TSMLoc> server_response_hdr_loc_;
+  TSMBuffer server_response_hdr_buf_;
+  TSMLoc server_response_hdr_loc_;
   Response server_response_;
-  InitializableValue<TSMBuffer> client_response_hdr_buf_;
-  InitializableValue<TSMLoc> client_response_hdr_loc_;
+  TSMBuffer client_response_hdr_buf_;
+  TSMLoc client_response_hdr_loc_;
   Response client_response_;
   map<string, shared_ptr<Transaction::ContextValue> > context_values_;
 
   TransactionState(TSHttpTxn txn, TSMBuffer client_request_hdr_buf, TSMLoc client_request_hdr_loc)
     : txn_(txn), client_request_hdr_buf_(client_request_hdr_buf), client_request_hdr_loc_(client_request_hdr_loc),
       client_request_(txn, client_request_hdr_buf, client_request_hdr_loc),
-      server_request_hdr_buf_(NULL, false), server_request_hdr_loc_(NULL, false),
-      server_response_hdr_buf_(NULL, false), server_response_hdr_loc_(NULL, false),
-      client_response_hdr_buf_(NULL, false), client_response_hdr_loc_(NULL, false)
+      server_request_hdr_buf_(NULL), server_request_hdr_loc_(NULL),
+      server_response_hdr_buf_(NULL), server_response_hdr_loc_(NULL),
+      client_response_hdr_buf_(NULL), client_response_hdr_loc_(NULL)
   { };
 };
 
@@ -78,15 +79,15 @@ Transaction::~Transaction() {
   LOG_DEBUG("Transaction tshttptxn=%p destroying Transaction object %p", state_->txn_, this);
   static const TSMLoc NULL_PARENT_LOC = NULL;
   TSHandleMLocRelease(state_->client_request_hdr_buf_, NULL_PARENT_LOC, state_->client_request_hdr_loc_);
-  if (state_->server_request_hdr_buf_.isInitialized() && state_->server_request_hdr_loc_.isInitialized()) {
+  if (state_->server_request_hdr_buf_ && state_->server_request_hdr_loc_) {
     LOG_DEBUG("Releasing server request");
     TSHandleMLocRelease(state_->server_request_hdr_buf_, NULL_PARENT_LOC, state_->server_request_hdr_loc_);
   }
-  if (state_->server_response_hdr_buf_.isInitialized() && state_->server_response_hdr_loc_.isInitialized()) {
+  if (state_->server_response_hdr_buf_ && state_->server_response_hdr_loc_) {
     LOG_DEBUG("Releasing server response");
     TSHandleMLocRelease(state_->server_response_hdr_buf_, NULL_PARENT_LOC, state_->server_response_hdr_loc_);
   }
-  if (state_->client_response_hdr_buf_.isInitialized() && state_->client_response_hdr_loc_.isInitialized()) {
+  if (state_->client_response_hdr_buf_ && state_->client_response_hdr_loc_) {
     LOG_DEBUG("Releasing client response");
     TSHandleMLocRelease(state_->client_response_hdr_buf_, NULL_PARENT_LOC, state_->client_response_hdr_loc_);
   }
@@ -222,19 +223,24 @@ namespace {
  * @param txn a TSHttpTxn
  * @param hdr_buf the address where the hdr buf will be stored
  * @param hdr_loc the address where the mem loc will be storeds
+ * @param name name of the entity - used for logging
  */
 class initializeHandles {
 public:
   typedef TSReturnCode (*GetterFunction)(TSHttpTxn, TSMBuffer *, TSMLoc *);
   initializeHandles(GetterFunction getter) : getter_(getter) { }
-  bool operator()(TSHttpTxn txn, InitializableValue<TSMBuffer> &hdr_buf, InitializableValue<TSMLoc> &hdr_loc) {
-    if (!hdr_buf.isInitialized() && !hdr_loc.isInitialized()) {
-      if (getter_(txn, &(hdr_buf.getValueRef()), &(hdr_loc.getValueRef())) == TS_SUCCESS) {
-        hdr_buf.setInitialized();
-        hdr_loc.setInitialized();
+  bool operator()(TSHttpTxn txn, TSMBuffer &hdr_buf, TSMLoc &hdr_loc, const char *handles_name) {
+    if (!hdr_buf && !hdr_loc) {
+      if (getter_(txn, &hdr_buf, &hdr_loc) == TS_SUCCESS) {
         return true;
-      } // TODO else log initialization failure error
-    } // TODO else log reinitialization error
+      }
+      else {
+        LOG_ERROR("Could not get %s", handles_name);
+      }
+    }
+    else {
+      LOG_ERROR("%s already initialized", handles_name);
+    }
     return false;
   }
 private:
@@ -246,7 +252,7 @@ private:
 void Transaction::initServerRequest() {
   static initializeHandles initializeServerRequestHandles(TSHttpTxnServerReqGet);
   if (initializeServerRequestHandles(state_->txn_, state_->server_request_hdr_buf_,
-                                     state_->server_request_hdr_loc_)) {
+                                     state_->server_request_hdr_loc_, "server request")) {
     LOG_DEBUG("Initializing server request");
     state_->server_request_.init(state_->server_request_hdr_buf_, state_->server_request_hdr_loc_);
   }
@@ -255,7 +261,7 @@ void Transaction::initServerRequest() {
 void Transaction::initServerResponse() {
   static initializeHandles initializeServerResponseHandles(TSHttpTxnServerRespGet);
   if (initializeServerResponseHandles(state_->txn_, state_->server_response_hdr_buf_,
-                                      state_->server_response_hdr_loc_)) {
+                                      state_->server_response_hdr_loc_, "server response")) {
     LOG_DEBUG("Initializing server response");
     state_->server_response_.init(state_->server_response_hdr_buf_, state_->server_response_hdr_loc_);
   }
@@ -264,7 +270,7 @@ void Transaction::initServerResponse() {
 void Transaction::initClientResponse() {
   static initializeHandles initializeClientResponseHandles(TSHttpTxnClientRespGet);
   if (initializeClientResponseHandles(state_->txn_, state_->client_response_hdr_buf_,
-                                      state_->client_response_hdr_loc_)) {
+                                      state_->client_response_hdr_loc_, "client response")) {
     LOG_DEBUG("Initializing client response");
     state_->client_response_.init(state_->client_response_hdr_buf_, state_->client_response_hdr_loc_);
   }

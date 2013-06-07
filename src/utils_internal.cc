@@ -96,7 +96,8 @@ void setupTransactionManagement() {
 #ifndef DISABLE_TRANSACTION_DATA_CACHING
   transaction_data_caching_enabled = (getenv(utils::DISABLE_DATA_CACHING_ENV_FLAG.c_str()) == NULL);
 #endif
-  LOG_DEBUG("Initialized transaction management");
+  LOG_DEBUG("Initialized transaction management with data caching %s",
+            (transaction_data_caching_enabled ? "enabled" : "disabled"));
   // TODO is existence of env variable enough or should we expect a specific value?
 }
 
