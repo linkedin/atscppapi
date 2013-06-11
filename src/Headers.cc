@@ -106,18 +106,15 @@ bool Headers::checkAndInitHeaders() const {
       key.assign(name, name_len);
       // TODO do we trust ATS tokenizing? Dzmitry ran into a bug...
       int num_values = TSMimeHdrFieldValuesCount(state_->hdr_buf_, state_->hdr_loc_, field_loc);
+      LOG_DEBUG("Got num values [%d] for header [%s]", num_values, key.c_str());
       for (int i = 0; i < num_values; ++i) {
         value = TSMimeHdrFieldValueStringGet(state_->hdr_buf_, state_->hdr_loc_, field_loc, i, &value_len);
-        if (value && value_len) {
-          insert_result = state_->name_values_map_.getValueRef().insert(
-            NameValuesMap::value_type(key, EMPTY_VALUE_LIST));
-          NameValuesMap::iterator &inserted_element = insert_result.first;
-          list<string> &value_list = inserted_element->second;
-          value_list.push_back(string(value, value_len));
-          LOG_DEBUG("Added value [%.*s] to header [%s]", value_len, value, key.c_str());
-        } else {
-          LOG_ERROR("Failed to get value at index %d of header [%s]", i, key.c_str());
-        }
+        insert_result = state_->name_values_map_.getValueRef().insert(
+          NameValuesMap::value_type(key, EMPTY_VALUE_LIST));
+        NameValuesMap::iterator &inserted_element = insert_result.first;
+        list<string> &value_list = inserted_element->second;
+        value_list.push_back(string(value, value_len));
+        LOG_DEBUG("Added value [%.*s] to header [%s]", value_len, value, key.c_str());
       }
     } else {
       LOG_ERROR("Failed to get name of header; hdr_buf %p, hdr_loc %p", state_->hdr_buf_, state_->hdr_loc_);
