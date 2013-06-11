@@ -109,6 +109,10 @@ bool Headers::checkAndInitHeaders() const {
       LOG_DEBUG("Got num values [%d] for header [%s]", num_values, key.c_str());
       for (int i = 0; i < num_values; ++i) {
         value = TSMimeHdrFieldValueStringGet(state_->hdr_buf_, state_->hdr_loc_, field_loc, i, &value_len);
+        if (!value || !value_len) {
+          value = "";
+          value_len = 0;
+        }
         insert_result = state_->name_values_map_.getValueRef().insert(
           NameValuesMap::value_type(key, EMPTY_VALUE_LIST));
         NameValuesMap::iterator &inserted_element = insert_result.first;
