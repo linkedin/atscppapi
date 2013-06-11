@@ -86,6 +86,27 @@ void Headers::initDetached() {
   state_->name_values_map_.setInitialized();
 }
 
+namespace {
+
+void extractHeaderFieldValues(TSMBuffer hdr_buf, TSMLoc hdr_loc, TSMLoc field_loc, const string &header_name,
+                              list<string> &value_list) {
+  int num_values = TSMimeHdrFieldValuesCount(hdr_buf, hdr_loc, field_loc);
+  LOG_DEBUG("Got %d values for header [%s]", num_values, header_name.c_str());
+  const char *value;
+  int value_len;
+  for (int i = 0; i < num_values; ++i) {
+    value = TSMimeHdrFieldValueStringGet(hdr_buf, hdr_loc, field_loc, i, &value_len);
+    if (!value || !value_len) {
+      value = "";
+      value_len = 0;
+    }
+    value_list.push_back(string(value, value_len));
+    LOG_DEBUG("Added value [%.*s] to header [%s]", value_len, value, header_name.c_str());
+  }
+}
+
+}
+
 bool Headers::checkAndInitHeaders() const {
   if (state_->name_values_map_.isInitialized()) {
     return true;
@@ -104,22 +125,11 @@ bool Headers::checkAndInitHeaders() const {
     name = TSMimeHdrFieldNameGet(state_->hdr_buf_, state_->hdr_loc_, field_loc, &name_len);
     if (name && (name_len > 0)) {
       key.assign(name, name_len);
-      // TODO do we trust ATS tokenizing? Dzmitry ran into a bug...
-      int num_values = TSMimeHdrFieldValuesCount(state_->hdr_buf_, state_->hdr_loc_, field_loc);
-      LOG_DEBUG("Got num values [%d] for header [%s]", num_values, key.c_str());
-      for (int i = 0; i < num_values; ++i) {
-        value = TSMimeHdrFieldValueStringGet(state_->hdr_buf_, state_->hdr_loc_, field_loc, i, &value_len);
-        if (!value || !value_len) {
-          value = "";
-          value_len = 0;
-        }
-        insert_result = state_->name_values_map_.getValueRef().insert(
-          NameValuesMap::value_type(key, EMPTY_VALUE_LIST));
-        NameValuesMap::iterator &inserted_element = insert_result.first;
-        list<string> &value_list = inserted_element->second;
-        value_list.push_back(string(value, value_len));
-        LOG_DEBUG("Added value [%.*s] to header [%s]", value_len, value, key.c_str());
-      }
+      insert_result = state_->name_values_map_.getValueRef().insert(
+        NameValuesMap::value_type(key, EMPTY_VALUE_LIST));
+      NameValuesMap::iterator &inserted_element = insert_result.first;
+      list<string> &value_list = inserted_element->second;
+      extractHeaderFieldValues(state_->hdr_buf_, state_->hdr_loc_, field_loc, key, value_list);
     } else {
       LOG_ERROR("Failed to get name of header; hdr_buf %p, hdr_loc %p", state_->hdr_buf_, state_->hdr_loc_);
     }
@@ -234,23 +244,9 @@ Headers::const_iterator Headers::doBasicAppend(const pair<string, list<string> >
     if (!insert_result.second) {
       value_list.clear();
     }
-    int num_values = TSMimeHdrFieldValuesCount(state_->hdr_buf_, state_->hdr_loc_, field_loc);
-    string header_values_string; // used for logging
-    for (int i = 0; i < num_values; ++i) {
-      int value_len = 0;
-      const char *value = TSMimeHdrFieldValueStringGet(state_->hdr_buf_, state_->hdr_loc_, field_loc, i, &value_len);
-      if (value && value_len) {
-        value_list.push_back(string(value, value_len));
-        if (!header_values_string.empty()) {
-          header_values_string += ',';
-        }
-        header_values_string += value_list.back();
-      } else {
-        LOG_ERROR("Got NULL/zero-length value for header [%s]; Skipping value", header_name.c_str());
-      }
-    }
+    extractHeaderFieldValues(state_->hdr_buf_, state_->hdr_loc_, field_loc, header_name, value_list);
     TSHandleMLocRelease(state_->hdr_buf_, state_->hdr_loc_, field_loc);
-    LOG_DEBUG("Header [%s] has value(s) [%s]", header_name.c_str(), header_values_string.c_str());
+    LOG_DEBUG("Header [%s] has value(s) [%s]", header_name.c_str(), getJoinedValues(value_list).c_str());
   }
   return insert_result.first;
 }
