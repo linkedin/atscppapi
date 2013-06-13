@@ -96,11 +96,7 @@ void extractHeaderFieldValues(TSMBuffer hdr_buf, TSMLoc hdr_loc, TSMLoc field_lo
   int value_len;
   for (int i = 0; i < num_values; ++i) {
     value = TSMimeHdrFieldValueStringGet(hdr_buf, hdr_loc, field_loc, i, &value_len);
-    if (!value || !value_len) {
-      value = "";
-      value_len = 0;
-    }
-    value_list.push_back(string(value, value_len));
+    value_list.push_back((value && value_len) ? string(value, value_len) : string());
     LOG_DEBUG("Added value [%.*s] to header [%s]", value_len, value, header_name.c_str());
   }
 }
