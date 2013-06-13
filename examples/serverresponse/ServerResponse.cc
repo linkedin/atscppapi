@@ -49,7 +49,9 @@ public:
   void handleReadResponseHeaders(Transaction &transaction) {
     cout << "Hello from handleReadResponseHeaders!" << endl;
     cout << "Server response headers are" << endl;
-    printHeaders(transaction.getServerResponse().getHeaders());
+    Response &server_response = transaction.getServerResponse();
+    cout << "Reason phrase is " << server_response.getReasonPhrase() << endl;
+    printHeaders(server_response.getHeaders());
     transaction.resume();
   }
 

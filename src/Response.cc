@@ -95,7 +95,7 @@ const string &Response::getReasonPhrase() const {
     const char *str = TSHttpHdrReasonGet(state_->hdr_buf_, state_->hdr_loc_, &length);
     if (str && length) {
       state_->reason_phrase_.getValueRef().assign(str, length);
-      LOG_DEBUG("Initializing response reason phrase to '%s' to %d with hdr_buf=%p and hdr_loc=%p",
+      LOG_DEBUG("Initializing response reason phrase to '%s' with hdr_buf=%p and hdr_loc=%p",
           state_->reason_phrase_.getValueRef().c_str(), state_->hdr_buf_, state_->hdr_loc_);
     } else {
       LOG_ERROR("TSHttpHdrReasonGet returned null string or zero length. str=%p, length=%d, hdr_buf=%p, hdr_loc=%p",
