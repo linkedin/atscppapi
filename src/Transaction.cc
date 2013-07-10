@@ -183,6 +183,11 @@ string Transaction::getEffectiveUrl() {
 	return ret_val;
 }
 
+bool Transaction::setCacheUrl(const string &cache_url) {
+	TSReturnCode res = TSCacheUrlSet(state_->txn_, cache_url.c_str(), cache_url.length());
+    return (res == TS_SUCCESS);
+}
+
 const sockaddr *Transaction::getIncomingAddress() const {
   return TSHttpTxnIncomingAddrGet(state_->txn_);
 }
