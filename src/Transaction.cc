@@ -172,6 +172,10 @@ string Transaction::getEffectiveUrl() {
 	if (buf && length) {
 		ret_val.assign(buf, length);
 	}
+
+	if (buf)
+		TSfree(buf);
+
 	return ret_val;
 }
 
