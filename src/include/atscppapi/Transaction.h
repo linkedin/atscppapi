@@ -217,6 +217,11 @@ public:
   Response &getClientResponse();
 
   /**
+   * Returns the Effective URL for this transaction taking into account host.
+   */
+  std::string getEffectiveUrl();
+
+  /**
    * The available types of timeouts you can set on a Transaction.
    */
   enum TimeoutType {
