@@ -222,6 +222,12 @@ public:
   std::string getEffectiveUrl();
 
   /**
+   * Sets the url used by the ATS cache for a specific transaction.
+   * @param url is the url to use in the cache.
+   */
+  bool setCacheUrl(const std::string &);
+
+  /**
    * The available types of timeouts you can set on a Transaction.
    */
   enum TimeoutType {
