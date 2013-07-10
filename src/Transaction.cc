@@ -165,6 +165,16 @@ Response &Transaction::getClientResponse() {
   return state_->client_response_;
 }
 
+string Transaction::getEffectiveUrl() {
+	string ret_val;
+	int length = 0;
+	char *buf = TSHttpTxnEffectiveUrlStringGet(state_->txn_, &length);
+	if (buf && length) {
+		ret_val.assign(buf, length);
+	}
+	return ret_val;
+}
+
 const sockaddr *Transaction::getIncomingAddress() const {
   return TSHttpTxnIncomingAddrGet(state_->txn_);
 }
