@@ -64,9 +64,12 @@ Request::Request(const string &url_str, HttpMethod method, HttpVersion version) 
     const char *url_str_end = url_str_start + url_str.size();
     if (TSUrlParse(state_->hdr_buf_, state_->url_loc_, &url_str_start, url_str_end) != TS_PARSE_DONE) {
       LOG_ERROR("[%s] does not represent a valid url", url_str.c_str());
+    }
+    else {
       state_->url_.init(state_->hdr_buf_, state_->url_loc_);
     }
-  } else {
+  }
+  else {
     state_->url_loc_ = NULL;
     LOG_ERROR("Could not create URL field; hdr_buf %p", state_->hdr_buf_); 
   }

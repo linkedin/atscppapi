@@ -92,6 +92,11 @@ void extractHeaderFieldValues(TSMBuffer hdr_buf, TSMLoc hdr_loc, TSMLoc field_lo
                               list<string> &value_list) {
   int num_values = TSMimeHdrFieldValuesCount(hdr_buf, hdr_loc, field_loc);
   LOG_DEBUG("Got %d values for header [%s]", num_values, header_name.c_str());
+  if (!num_values) {
+    LOG_DEBUG("Header [%s] has no values; Adding empty string", header_name.c_str());
+    value_list.push_back(string());
+    return;
+  }
   const char *value;
   int value_len;
   for (int i = 0; i < num_values; ++i) {
