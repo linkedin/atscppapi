@@ -165,9 +165,11 @@ Headers::size_type Headers::erase(const string &k) {
 Headers::size_type Headers::doBasicErase(const string &k) {
   if (!state_->detached_) {
     TSMLoc field_loc = TSMimeHdrFieldFind(state_->hdr_buf_, state_->hdr_loc_, k.c_str(), k.length());
-    if (field_loc) {
+    while (field_loc) {
+      TSMLoc next_field_loc = TSMimeHdrFieldNextDup(state_->hdr_buf_, state_->hdr_loc_, field_loc);
       TSMimeHdrFieldDestroy(state_->hdr_buf_, state_->hdr_loc_, field_loc);
       TSHandleMLocRelease(state_->hdr_buf_, state_->hdr_loc_, field_loc);
+      field_loc = next_field_loc;
     }
   }
   return state_->name_values_map_.getValueRef().erase(k);
