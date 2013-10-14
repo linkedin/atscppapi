@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">atscppapi
-   &#160;<span id="projectnumber">1.0.3</span>
+   &#160;<span id="projectnumber">1.0.9</span>
    </div>
    <div id="projectbrief">C++ wrapper for Apache Traffic Server API</div>
   </td>
@@ -155,6 +155,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a488a3a904ba14e522f93e2914dd24c55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d1db245c8130ec0f00c06a7128d28af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classatscppapi_1_1Response.html">Response</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatscppapi_1_1Transaction.html#a9d1db245c8130ec0f00c06a7128d28af">getClientResponse</a> ()</td></tr>
 <tr class="separator:a9d1db245c8130ec0f00c06a7128d28af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab84aae3767abb260e8a00cd23887ee6f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatscppapi_1_1Transaction.html#ab84aae3767abb260e8a00cd23887ee6f">getEffectiveUrl</a> ()</td></tr>
+<tr class="separator:ab84aae3767abb260e8a00cd23887ee6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73950e4bfd96fc8c9cd6a3e67f0e0735"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatscppapi_1_1Transaction.html#a73950e4bfd96fc8c9cd6a3e67f0e0735">setCacheUrl</a> (const std::string &amp;)</td></tr>
+<tr class="separator:a73950e4bfd96fc8c9cd6a3e67f0e0735"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7b18cc6654eb84a01822933c0616020"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatscppapi_1_1Transaction.html#ac7b18cc6654eb84a01822933c0616020">setTimeout</a> (<a class="el" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895">TimeoutType</a> type, int time_ms)</td></tr>
 <tr class="separator:ac7b18cc6654eb84a01822933c0616020"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03bfa1d1633a9a9d5b190bae39f3edd9"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatscppapi_1_1Transaction.html#a03bfa1d1633a9a9d5b190bae39f3edd9">getAtsHandle</a> () const </td></tr>
@@ -356,6 +360,22 @@ atscppapi::utils::getIpPortString in <a class="el" href="utils_8h.html" title="C
 
 </div>
 </div>
+<a class="anchor" id="ab84aae3767abb260e8a00cd23887ee6f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Transaction::getEffectiveUrl </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the Effective URL for this transaction taking into account host. </p>
+
+</div>
+</div>
 <a class="anchor" id="a7922f3097709b09015714951487c4bdf"></a>
 <div class="memitem">
 <div class="memproto">
@@ -486,6 +506,29 @@ atscppapi::utils::getIpPortString in <a class="el" href="utils_8h.html" title="C
       </table>
 </div><div class="memdoc">
 <p>Causes the <a class="el" href="classatscppapi_1_1Transaction.html" title="Transactions are the object containing all the state related to a HTTP Transaction.">Transaction</a> to continue on to other states in the HTTP state machine If you do not call <a class="el" href="classatscppapi_1_1Transaction.html#a403b4e454eb8762c1b9717e00907f55f">resume()</a> on a <a class="el" href="classatscppapi_1_1Transaction.html" title="Transactions are the object containing all the state related to a HTTP Transaction.">Transaction</a> it will remain in that state until it's advanced out by a call to <a class="el" href="classatscppapi_1_1Transaction.html#a403b4e454eb8762c1b9717e00907f55f">resume()</a> or <a class="el" href="classatscppapi_1_1Transaction.html#a8a96d37b86768655e865c30f1543331b">error()</a>. </p>
+
+</div>
+</div>
+<a class="anchor" id="a73950e4bfd96fc8c9cd6a3e67f0e0735"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Transaction::setCacheUrl </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the url used by the ATS cache for a specific transaction. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">url</td><td>is the url to use in the cache. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -634,7 +677,7 @@ atscppapi::utils::getIpPortString in <a class="el" href="utils_8h.html" title="C
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 14 2013 13:04:10 for atscppapi by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Oct 14 2013 11:39:29 for atscppapi by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

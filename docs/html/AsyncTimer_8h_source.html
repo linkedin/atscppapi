@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">atscppapi
-   &#160;<span id="projectnumber">1.0.3</span>
+   &#160;<span id="projectnumber">1.0.9</span>
    </div>
    <div id="projectbrief">C++ wrapper for Apache Traffic Server API</div>
   </td>
@@ -125,41 +125,48 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">/**</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"> * @brief This class provides an implementation of AsyncProvider that</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"> * acts as a timer. It sends events at the set frequency. Calling the</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment"> * destructor will stop the events.</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment"> * See example async_timer for sample usage.</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="code" href="classatscppapi_1_1AsyncTimer.html">   41</a></span>&#160;<span class="keyword">class </span><a class="code" href="classatscppapi_1_1AsyncTimer.html" title="This class provides an implementation of AsyncProvider that acts as a timer. It sends events at the s...">AsyncTimer</a> : <span class="keyword">public</span> <a class="code" href="classatscppapi_1_1AsyncProvider.html" title="AsyncProvider is the interface that providers of async operations must implement. The system allows d...">AsyncProvider</a> {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">public</span>:<span class="comment"></span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">   * Constructor.</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">   * </span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">   * @param period_in_ms The receiver will receive an event every this many milliseconds.</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">   * @param initial_period_in_ms The first event will arrive after this many milliseconds. Subsequent</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">   *                             events will have &quot;regular&quot; cadence. This is useful if the timer is</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">   *                             set for a long period of time (1hr etc.), but an initial event is</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">   *                             required. Value of 0 (default) indicates no initial event is desired.</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <a class="code" href="classatscppapi_1_1AsyncTimer.html#a3ccb3ed83cd9cc829752fa10a04579ca">AsyncTimer</a>(<span class="keywordtype">int</span> period_in_ms, <span class="keywordtype">int</span> initial_period_in_ms = 0);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  ~<a class="code" href="classatscppapi_1_1AsyncTimer.html" title="This class provides an implementation of AsyncProvider that acts as a timer. It sends events at the s...">AsyncTimer</a>();</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">   * Starts the timer.</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">   */</span>  </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classatscppapi_1_1AsyncTimer.html#a9eaae324cd380c88826a422349172cca">run</a>(shared_ptr&lt;AsyncDispatchControllerBase&gt; dispatch_controller);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment"> * destructor will stop the events. A one-off timer just sends one</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"> * event. Calling the destructor before this event will cancel the timer.</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment"> * </span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment"> * For either type, user must delete the timer.</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment"> * See example async_timer for sample usage.</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="code" href="classatscppapi_1_1AsyncTimer.html">   44</a></span>&#160;<span class="keyword">class </span><a class="code" href="classatscppapi_1_1AsyncTimer.html" title="This class provides an implementation of AsyncProvider that acts as a timer. It sends events at the s...">AsyncTimer</a> : <span class="keyword">public</span> <a class="code" href="classatscppapi_1_1AsyncProvider.html" title="AsyncProvider is the interface that providers of async operations must implement. The system allows d...">AsyncProvider</a> {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keyword">enum</span> Type { TYPE_ONE_OFF = 0, TYPE_PERIODIC };</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">   * Constructor.</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">   * </span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">   * @param type A one-off timer fires only once and a periodic timer fires periodically.</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">   * @param period_in_ms The receiver will receive an event every this many milliseconds.</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">   * @param initial_period_in_ms The first event will arrive after this many milliseconds. Subsequent</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">   *                             events will have &quot;regular&quot; cadence. This is useful if the timer is</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">   *                             set for a long period of time (1hr etc.), but an initial event is</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">   *                             required. Value of 0 (default) indicates no initial event is desired.</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <a class="code" href="classatscppapi_1_1AsyncTimer.html#a2d097d8188563619d9a353f2ee1c14af">AsyncTimer</a>(Type type, <span class="keywordtype">int</span> period_in_ms, <span class="keywordtype">int</span> initial_period_in_ms = 0);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <a class="code" href="structatscppapi_1_1AsyncTimerState.html">AsyncTimerState</a> *state_;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;} <span class="comment">/* atscppapi */</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ATSCPPAPI_ASYNCTIMER_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  ~<a class="code" href="classatscppapi_1_1AsyncTimer.html" title="This class provides an implementation of AsyncProvider that acts as a timer. It sends events at the s...">AsyncTimer</a>();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">   * Starts the timer.</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">   */</span>  </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classatscppapi_1_1AsyncTimer.html#a9eaae324cd380c88826a422349172cca">run</a>(shared_ptr&lt;AsyncDispatchControllerBase&gt; dispatch_controller);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <a class="code" href="structatscppapi_1_1AsyncTimerState.html">AsyncTimerState</a> *state_;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;} <span class="comment">/* atscppapi */</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ATSCPPAPI_ASYNCTIMER_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 14 2013 13:04:09 for atscppapi by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Oct 14 2013 11:39:29 for atscppapi by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

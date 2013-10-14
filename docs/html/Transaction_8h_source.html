@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">atscppapi
-   &#160;<span id="projectnumber">1.0.3</span>
+   &#160;<span id="projectnumber">1.0.9</span>
    </div>
    <div id="projectbrief">C++ wrapper for Apache Traffic Server API</div>
   </td>
@@ -308,91 +308,102 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  <a class="code" href="classatscppapi_1_1Response.html" title="Encapsulates a response.">Response</a> &amp;<a class="code" href="classatscppapi_1_1Transaction.html#a9d1db245c8130ec0f00c06a7128d28af">getClientResponse</a>();</div>
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="comment">   * The available types of timeouts you can set on a Transaction.</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="comment">   * Returns the Effective URL for this transaction taking into account host.</span></div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895">  222</a></span>&#160;  <span class="keyword">enum</span> <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895">TimeoutType</a> {</div>
-<div class="line"><a name="l00223"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a1fb43a91129846f522d76dbb738c74e3">  223</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a1fb43a91129846f522d76dbb738c74e3">TIMEOUT_DNS</a> = 0, <span class="comment">/**&lt; Timeout on DNS */</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a11213d84eaf51d43acf08a149024a97e">  224</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a11213d84eaf51d43acf08a149024a97e">TIMEOUT_CONNECT</a>, <span class="comment">/**&lt; Timeout on Connect */</span></div>
-<div class="line"><a name="l00225"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a895c0b097218e2dcc568d5db5896b548">  225</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a895c0b097218e2dcc568d5db5896b548">TIMEOUT_NO_ACTIVITY</a>, <span class="comment">/**&lt; Timeout on No Activity */</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a3f4f0ae659ceda3aa19f221ec62e2776">  226</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a3f4f0ae659ceda3aa19f221ec62e2776">TIMEOUT_ACTIVE</a> <span class="comment">/**&lt; Timeout with Activity */</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;  };</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment">   * Allows you to set various types of timeouts on a Transaction</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment">   * @param type The type of timeout</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment">   * @param time_ms The timeout time in milliseconds</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="comment">   * @see TimeoutType</span></div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classatscppapi_1_1Transaction.html#ac7b18cc6654eb84a01822933c0616020">setTimeout</a>(<a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895">TimeoutType</a> type, <span class="keywordtype">int</span> time_ms);</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment">   * Returns the TSHttpTxn related to the current Transaction</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="comment">   * @return a void * which can be cast back to a TSHttpTxn.</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  <span class="keywordtype">void</span> *<a class="code" href="classatscppapi_1_1Transaction.html#a03bfa1d1633a9a9d5b190bae39f3edd9">getAtsHandle</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment">   * Adds a TransactionPlugin to the current Transaction. This effectively transfers ownership and the</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="comment">   * Transaction is now responsible for cleaning it up.</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment">   * @param TransactionPlugin* the TransactionPlugin that will be now bound to the current Transaction.</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classatscppapi_1_1Transaction.html#a2793cd979d3bfbf9990bc9b723fbc1fd">addPlugin</a>(<a class="code" href="classatscppapi_1_1TransactionPlugin.html" title="The interface used when creating a TransactionPlugin.">TransactionPlugin</a> *);</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  TransactionState *state_; <span class="comment">//!&lt; The internal TransactionState object tied to the current Transaction</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#adb27680c5be6126e1aae35d1ccdf776e">  255</a></span>&#160;<span class="comment"></span>  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classatscppapi_1_1TransactionPlugin.html" title="The interface used when creating a TransactionPlugin.">TransactionPlugin</a>; <span class="comment">//!&lt; TransactionPlugin is a friend so it can call addPlugin()</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#aad6db08672d214fbb45679a501ad75e9">  256</a></span>&#160;<span class="comment"></span>  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classatscppapi_1_1TransformationPlugin.html" title="The interface used when you wish to transform Request or Response body content.">TransformationPlugin</a>; <span class="comment">//!&lt; TransformationPlugin is a friend so it can call addPlugin()</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment"></span><span class="comment"></span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment">   * @private</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment">   * @param raw_txn a void pointer that represents a TSHttpTxn</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  <a class="code" href="classatscppapi_1_1Transaction.html" title="Transactions are the object containing all the state related to a HTTP Transaction.">Transaction</a>(<span class="keywordtype">void</span> *);</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="comment">   * Used to initialize the Request object for the Server.</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment">   * @private</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;  <span class="keywordtype">void</span> initServerRequest();</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="comment">   * Used to initialize the Response object for the Server.</span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment">   * @private</span></div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  <span class="keywordtype">void</span> initServerResponse();</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="comment">   * Used to initialize the Response object for the Client.</span></div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;<span class="comment">   * @private</span></div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  <span class="keywordtype">void</span> initClientResponse();</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="comment">  /**</span></div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="comment">   * Returns a list of TransactionPlugin pointers bound to the current Transaction</span></div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="comment">   * @private</span></div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="comment">   * @return a std::list&lt;TransactionPlugin *&gt; which represents all TransactionPlugin bound to the current Transaction.</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="keyword">const</span> std::list&lt;TransactionPlugin *&gt; &amp;getPlugins() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span>utils::internal;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;};</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;} <span class="comment">/* atscppapi */</span></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ATSCPPAPI_TRANSACTION_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;  std::string <a class="code" href="classatscppapi_1_1Transaction.html#ab84aae3767abb260e8a00cd23887ee6f">getEffectiveUrl</a>();</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment">   * Sets the url used by the ATS cache for a specific transaction.</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="comment">   * @param url is the url to use in the cache.</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classatscppapi_1_1Transaction.html#a73950e4bfd96fc8c9cd6a3e67f0e0735">setCacheUrl</a>(<span class="keyword">const</span> std::string &amp;);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment">   * The available types of timeouts you can set on a Transaction.</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895">  233</a></span>&#160;  <span class="keyword">enum</span> <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895">TimeoutType</a> {</div>
+<div class="line"><a name="l00234"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a1fb43a91129846f522d76dbb738c74e3">  234</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a1fb43a91129846f522d76dbb738c74e3">TIMEOUT_DNS</a> = 0, <span class="comment">/**&lt; Timeout on DNS */</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a11213d84eaf51d43acf08a149024a97e">  235</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a11213d84eaf51d43acf08a149024a97e">TIMEOUT_CONNECT</a>, <span class="comment">/**&lt; Timeout on Connect */</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a895c0b097218e2dcc568d5db5896b548">  236</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a895c0b097218e2dcc568d5db5896b548">TIMEOUT_NO_ACTIVITY</a>, <span class="comment">/**&lt; Timeout on No Activity */</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a3f4f0ae659ceda3aa19f221ec62e2776">  237</a></span>&#160;    <a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895a3f4f0ae659ceda3aa19f221ec62e2776">TIMEOUT_ACTIVE</a> <span class="comment">/**&lt; Timeout with Activity */</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;  };</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="comment">   * Allows you to set various types of timeouts on a Transaction</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="comment">   * @param type The type of timeout</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment">   * @param time_ms The timeout time in milliseconds</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment">   * @see TimeoutType</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classatscppapi_1_1Transaction.html#ac7b18cc6654eb84a01822933c0616020">setTimeout</a>(<a class="code" href="classatscppapi_1_1Transaction.html#a49e885de00f9b7d81338bbcef8cf7895">TimeoutType</a> type, <span class="keywordtype">int</span> time_ms);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="comment">   * Returns the TSHttpTxn related to the current Transaction</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="comment">   * @return a void * which can be cast back to a TSHttpTxn.</span></div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  <span class="keywordtype">void</span> *<a class="code" href="classatscppapi_1_1Transaction.html#a03bfa1d1633a9a9d5b190bae39f3edd9">getAtsHandle</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment">   * Adds a TransactionPlugin to the current Transaction. This effectively transfers ownership and the</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment">   * Transaction is now responsible for cleaning it up.</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment">   * @param TransactionPlugin* the TransactionPlugin that will be now bound to the current Transaction.</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classatscppapi_1_1Transaction.html#a2793cd979d3bfbf9990bc9b723fbc1fd">addPlugin</a>(<a class="code" href="classatscppapi_1_1TransactionPlugin.html" title="The interface used when creating a TransactionPlugin.">TransactionPlugin</a> *);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  TransactionState *state_; <span class="comment">//!&lt; The internal TransactionState object tied to the current Transaction</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#adb27680c5be6126e1aae35d1ccdf776e">  266</a></span>&#160;<span class="comment"></span>  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classatscppapi_1_1TransactionPlugin.html" title="The interface used when creating a TransactionPlugin.">TransactionPlugin</a>; <span class="comment">//!&lt; TransactionPlugin is a friend so it can call addPlugin()</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno"><a class="code" href="classatscppapi_1_1Transaction.html#aad6db08672d214fbb45679a501ad75e9">  267</a></span>&#160;<span class="comment"></span>  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classatscppapi_1_1TransformationPlugin.html" title="The interface used when you wish to transform Request or Response body content.">TransformationPlugin</a>; <span class="comment">//!&lt; TransformationPlugin is a friend so it can call addPlugin()</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment"></span><span class="comment"></span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="comment">   * @private</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="comment">   * @param raw_txn a void pointer that represents a TSHttpTxn</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;  <a class="code" href="classatscppapi_1_1Transaction.html" title="Transactions are the object containing all the state related to a HTTP Transaction.">Transaction</a>(<span class="keywordtype">void</span> *);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="comment">   * Used to initialize the Request object for the Server.</span></div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;<span class="comment">   * @private</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;  <span class="keywordtype">void</span> initServerRequest();</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="comment">   * Used to initialize the Response object for the Server.</span></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="comment">   * @private</span></div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="keywordtype">void</span> initServerResponse();</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="comment">   * Used to initialize the Response object for the Client.</span></div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="comment">   * @private</span></div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="keywordtype">void</span> initClientResponse();</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="comment">  /**</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="comment">   * Returns a list of TransactionPlugin pointers bound to the current Transaction</span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="comment">   * @private</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="comment">   * @return a std::list&lt;TransactionPlugin *&gt; which represents all TransactionPlugin bound to the current Transaction.</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;  <span class="keyword">const</span> std::list&lt;TransactionPlugin *&gt; &amp;getPlugins() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span>utils::internal;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;};</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;} <span class="comment">/* atscppapi */</span></div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ATSCPPAPI_TRANSACTION_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 14 2013 13:04:09 for atscppapi by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Oct 14 2013 11:39:29 for atscppapi by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

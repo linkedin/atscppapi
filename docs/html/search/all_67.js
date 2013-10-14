@@ -6,6 +6,7 @@ var searchData=
   ['getclientrequest',['getClientRequest',['../classatscppapi_1_1Transaction.html#acaa7c820f6931ac3b146045189a72f04',1,'atscppapi::Transaction']]],
   ['getclientresponse',['getClientResponse',['../classatscppapi_1_1Transaction.html#a9d1db245c8130ec0f00c06a7128d28af',1,'atscppapi::Transaction']]],
   ['getcontextvalue',['getContextValue',['../classatscppapi_1_1Transaction.html#a6437162002c5f5624e5058a3448d55f7',1,'atscppapi::Transaction']]],
+  ['geteffectiveurl',['getEffectiveUrl',['../classatscppapi_1_1Transaction.html#ab84aae3767abb260e8a00cd23887ee6f',1,'atscppapi::Transaction']]],
   ['getheaders',['getHeaders',['../classatscppapi_1_1Request.html#aa7a3310acd2e37f8524d7a7c9a61ad96',1,'atscppapi::Request::getHeaders()'],['../classatscppapi_1_1Response.html#a79fe373e136c1a147c5b902ed4a4dcb7',1,'atscppapi::Response::getHeaders()']]],
   ['gethost',['getHost',['../classatscppapi_1_1Url.html#ab2ba3acd36af7052f81b64016b2f556e',1,'atscppapi::Url']]],
   ['getincomingaddress',['getIncomingAddress',['../classatscppapi_1_1Transaction.html#a7922f3097709b09015714951487c4bdf',1,'atscppapi::Transaction']]],
@@ -43,8 +44,8 @@ var searchData=
   ['gzipdeflatetransformation',['GzipDeflateTransformation',['../classatscppapi_1_1transformations_1_1GzipDeflateTransformation.html#a78a13d939f11668774da936eb87e769f',1,'atscppapi::transformations::GzipDeflateTransformation']]],
   ['gzipdeflatetransformation_2ecc',['GzipDeflateTransformation.cc',['../GzipDeflateTransformation_8cc.html',1,'']]],
   ['gzipdeflatetransformation_2eh',['GzipDeflateTransformation.h',['../GzipDeflateTransformation_8h.html',1,'']]],
-  ['gzipinflatetransformation',['GzipInflateTransformation',['../classatscppapi_1_1transformations_1_1GzipInflateTransformation.html',1,'atscppapi::transformations']]],
   ['gzipinflatetransformation',['GzipInflateTransformation',['../classatscppapi_1_1transformations_1_1GzipInflateTransformation.html#a586bbd2a7c81997419f3995f2a8e7dfc',1,'atscppapi::transformations::GzipInflateTransformation']]],
+  ['gzipinflatetransformation',['GzipInflateTransformation',['../classatscppapi_1_1transformations_1_1GzipInflateTransformation.html',1,'atscppapi::transformations']]],
   ['gzipinflatetransformation_2ecc',['GzipInflateTransformation.cc',['../GzipInflateTransformation_8cc.html',1,'']]],
   ['gzipinflatetransformation_2eh',['GzipInflateTransformation.h',['../GzipInflateTransformation_8h.html',1,'']]]
 ];
